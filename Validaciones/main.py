@@ -1,4 +1,3 @@
-from timeit import repeat
 from pydantic import BaseModel, ValidationError, validator
 from typing import Optional
 
