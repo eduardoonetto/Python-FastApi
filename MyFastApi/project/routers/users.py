@@ -1,8 +1,9 @@
 from ..schemas import ReviewResponseModel, UserRequestModel, UserResponseModel
-from fastapi import APIRouter, HTTPException, Response, Cookie
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.security import HTTPBasicCredentials
 from ..database import User
 from typing import List
+from ..common import get_current_user, oauth2_schema
 
 router= APIRouter(prefix='/users')
 
@@ -33,10 +34,6 @@ async def login(credentials: HTTPBasicCredentials, response: Response):
     return user
 
 @router.get('/reviews', response_model=List[ReviewResponseModel])
-async def get_reviews(user_id: int = Cookie(None)):
-    user = User.select().where(User.id == user_id).first()
+async def get_reviews(user: User = Depends(get_current_user)):
 
-    if user is None:
-        raise HTTPException(404, 'User not Found')
-    
     return [user_review for user_review in user.reviews]

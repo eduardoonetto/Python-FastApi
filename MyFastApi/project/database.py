@@ -17,6 +17,11 @@ class User(Model):
         table_name = 'users'
 
     @classmethod
+    def authenticate(cls, username, password):
+        user = cls.select().where(User.username == username, cls.create_password(password) == User.password).first()
+        return user
+        
+    @classmethod
     def create_password(cls, password):
         h = hashlib.md5()
 
